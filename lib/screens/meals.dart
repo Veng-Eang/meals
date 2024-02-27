@@ -37,6 +37,7 @@ class MealsScreen extends StatelessWidget {
         itemCount: meals.length,
         itemBuilder: (ctx, index) => Text(
           meals[index].title,
+          style: TextStyle(color: Colors.white),
         ),
       );
     }
