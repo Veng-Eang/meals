@@ -6,6 +6,7 @@ import 'package:meals/screens/categories_screen.dart';
 import 'package:meals/screens/filter.dart';
 import 'package:meals/screens/meals.dart';
 import 'package:meals/widgets/main_drawer.dart';
+import 'package:meals/providers/filter_provider.dart';
 
 const kInitialFilters = {
   Filter.glutenFree: false,
@@ -25,7 +26,6 @@ class TabsScreen extends ConsumerStatefulWidget {
 class _TabsScreenState extends ConsumerState<TabsScreen> {
   int _selectedPageIndex = 0;
   final List<Meal> _favoritiesMeal = [];
-  Map<Filter, bool> _selectedFilter = kInitialFilters;
 
   void _showInfoMessage(String message) {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -57,34 +57,29 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   void _setScreen(String identifier) async {
     Navigator.of(context).pop();
     if (identifier == 'filters') {
-      final result = await Navigator.of(context).push(
+      await Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (ctx) => FilterScreen(
-            currentFilters: _selectedFilter,
-          ),
+          builder: (ctx) => const FilterScreen(),
         ),
       );
-      setState(() {
-        _selectedFilter = result ?? kInitialFilters;
-      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final meals = ref.watch(mealsProvider);
-
+    final activeFilter = ref.watch(filterProvider);
     final availableMeals = meals.where((meals) {
-      if (_selectedFilter[Filter.glutenFree]! && !meals.isGlutenFree) {
+      if (activeFilter[Filter.glutenFree]! && !meals.isGlutenFree) {
         return false;
       }
-      if (_selectedFilter[Filter.lactoseFree]! && !meals.isLactoseFree) {
+      if (activeFilter[Filter.lactoseFree]! && !meals.isLactoseFree) {
         return false;
       }
-      if (_selectedFilter[Filter.vegetarian]! && !meals.isVegetarian) {
+      if (activeFilter[Filter.vegetarian]! && !meals.isVegetarian) {
         return false;
       }
-      if (_selectedFilter[Filter.vegan]! && !meals.isVegan) {
+      if (activeFilter[Filter.vegan]! && !meals.isVegan) {
         return false;
       }
       return true;
@@ -112,7 +107,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectePage,
         currentIndex: _selectedPageIndex,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.set_meal),
             label: 'Categories',
