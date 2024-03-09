@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:meals/models/meal.dart';
 import 'package:meals/providers/favorite_provider.dart';
 import 'package:meals/providers/meals_provider.dart';
 import 'package:meals/screens/categories_screen.dart';
@@ -27,21 +26,6 @@ class TabsScreen extends ConsumerStatefulWidget {
 class _TabsScreenState extends ConsumerState<TabsScreen> {
   int _selectedPageIndex = 0;
 
-  // void _toggleFavoritiesMeal(Meal meal) {
-  //   final isExisting = _favoritiesMeal.contains(meal);
-  //   if (isExisting) {
-  //     setState(() {
-  //       _favoritiesMeal.remove(meal);
-  //       _showInfoMessage('Meal is no longer a favorite.');
-  //     });
-  //   } else {
-  //     setState(() {
-  //       _favoritiesMeal.add(meal);
-  //       _showInfoMessage('Marked as a favorite!');
-  //     });
-  //   }
-  // }
-
   void _selectePage(int index) {
     setState(() {
       _selectedPageIndex = index;
@@ -61,23 +45,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final meals = ref.watch(mealsProvider);
-    final activeFilter = ref.watch(filterProvider);
-    final availableMeals = meals.where((meals) {
-      if (activeFilter[Filter.glutenFree]! && !meals.isGlutenFree) {
-        return false;
-      }
-      if (activeFilter[Filter.lactoseFree]! && !meals.isLactoseFree) {
-        return false;
-      }
-      if (activeFilter[Filter.vegetarian]! && !meals.isVegetarian) {
-        return false;
-      }
-      if (activeFilter[Filter.vegan]! && !meals.isVegan) {
-        return false;
-      }
-      return true;
-    }).toList();
+    final availableMeals = ref.watch(filterMealsPrivider);
     Widget activePage = CategoriesScreen(availableMeals: availableMeals);
     var activePageTitle = 'Categories';
     if (_selectedPageIndex == 1) {
