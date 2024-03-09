@@ -16,6 +16,7 @@ class FavoriteMealsNotifier extends StateNotifier<List<Meal>> {
   }
 }
 
-final favoriteMealProvider = StateNotifierProvider(
+final favoriteMealProvider =
+    StateNotifierProvider<FavoriteMealsNotifier, List<Meal>>(
   (ref) => FavoriteMealsNotifier(),
 );
